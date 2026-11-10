@@ -2038,6 +2038,8 @@ section.arrive > .wrap{ animation:arrive .5s cubic-bezier(.22,.7,.25,1); }
     var pos = window.scrollY + 140;
     var current = sections[0] ? sections[0].id : '';
     sections.forEach(function(s){ if(s.offsetTop <= pos) current = s.id; });
+    if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8 && sections.length) current = sections[sections.length-1].id;
+    if(window.__navForce && Date.now() < window.__navForce.until) current = window.__navForce.id;
     navLinks.forEach(function(a){
       a.classList.toggle('is-active', a.getAttribute('href') === '#'+current);
     });
@@ -2066,6 +2068,7 @@ section.arrive > .wrap{ animation:arrive .5s cubic-bezier(.22,.7,.25,1); }
       var id=a.getAttribute('href'); if(id.length<2) return;
       var sec=document.querySelector(id); if(!sec) return;
       e.preventDefault();
+      window.__navForce={id:id.slice(1),until:Date.now()+900};
       var mm=document.getElementById('mobileMenu')||document.querySelector('.mobile-menu'); if(mm&&mm.classList.contains('open')){ var hb=document.querySelector('.hamburger'); if(hb) hb.click(); }
       sec.scrollIntoView({behavior:'instant',block:'start'});
       try{ history.pushState(null,'',id); }catch(_){}
